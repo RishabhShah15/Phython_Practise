@@ -2,5 +2,4 @@
 songs = ['Shape Of You', 'Blinding Lights', 'Levitating', 'Senorita']
 
 lowercase_song=list(map(lambda s:s.lower(),songs))
-
 print(lowercase_song)
