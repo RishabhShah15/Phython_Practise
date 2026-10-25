@@ -1,0 +1,188 @@
+CREATE TABLE Products2 (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100),
+    brand VARCHAR(50),
+    category VARCHAR(50),
+    price DECIMAL(10, 2),
+    rating DECIMAL(2, 1)
+);
+
+INSERT INTO Products2 (product_id, product_name, brand, category, price, rating) VALUES
+(101, 'Roadster Men Regular Denim Shirt', 'Roadster', 'Fashion', 999.00, 4.6),
+(102, 'boAt Rockerz 450 Bluetooth Headset', 'boAt', 'Electronics', 1499.00, 4.2),
+(103, 'Puma Men Running Shoes', 'Puma', 'Footwear', 2499.00, 4.8),
+(104, 'Noise ColorFit Pulse Smartwatch', 'Noise', 'Electronics', 1799.00, 4.1),
+(105, 'Levis Slim Fit Jeans', 'Levis', 'Fashion', 2299.00, 4.7);
+
+WITH TopRatedProducts AS (
+    SELECT 
+        product_id,
+        product_name,
+        brand,
+        category,
+        price,
+        rating
+    FROM Products2
+    WHERE rating > 4.5
+)
+SELECT 
+    product_id,
+    product_name,
+    brand,
+    category,
+    price,
+    rating
+FROM TopRatedProducts
+ORDER BY rating DESC;
+
+
+CREATE TABLE Restaurants2 (
+    restaurant_id INT PRIMARY KEY,
+    restaurant_name VARCHAR(100),
+    city VARCHAR(50),
+    cuisine VARCHAR(50),
+    delivery_charge DECIMAL(5, 2)
+);
+
+INSERT INTO Restaurants2 (restaurant_id, restaurant_name, city, cuisine, delivery_charge) VALUES
+(1, 'Manek Chowk Delights', 'Ahmedabad', 'Street Food', 30.00),
+(2, 'Gordhan Thal', 'Ahmedabad', 'Gujarati', 60.00),
+(3, 'Under The Neem Tree', 'Ahmedabad', 'North Indian', 40.00),
+(4, 'Bawarchi', 'Mumbai', 'Biryani', 25.00),
+(5, 'Swati Snacks', 'Ahmedabad', 'Snacks', 45.00);
+
+SELECT 
+    filtered.restaurant_id,
+    filtered.restaurant_name,
+    filtered.city,
+    filtered.delivery_charge
+FROM (
+    SELECT *
+    FROM Restaurants2
+    WHERE city = 'Ahmedabad'
+) AS filtered
+WHERE filtered.delivery_charge < 50;
+
+WITH AhmedabadEateries AS (
+    SELECT 
+        restaurant_id,
+        restaurant_name,
+        city,
+        delivery_charge
+    FROM Restaurants2
+    WHERE city = 'Ahmedabad'
+)
+SELECT 
+    restaurant_id,
+    restaurant_name,
+    city,
+    delivery_charge
+FROM AhmedabadEateries
+WHERE delivery_charge < 50
+ORDER BY delivery_charge ASC;
+
+CREATE TABLE Users2 (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(50),
+    follower_count INT
+);
+
+CREATE TABLE Posts (
+    post_id INT PRIMARY KEY,
+    user_id INT,
+    caption VARCHAR(255),
+    like_count INT,
+    FOREIGN KEY (user_id) REFERENCES Users2(user_id)
+);
+
+INSERT INTO Users2 (user_id, username, follower_count) VALUES
+(1, 'tech_insider', 45000),
+(2, 'travel_diaries', 120000),
+(3, 'foodie_delights', 89000),
+(4, 'daily_memes', 310000),
+(5, 'fit_life', 22000);
+
+INSERT INTO Posts (post_id, user_id, caption, like_count) VALUES
+(201, 2, 'Sunset over Ladakh', 15400),
+(202, 4, 'Monday morning mood', 45200),
+(203, 3, 'Authentic street tacos', 9800),
+(204, 1, 'New AI features launched!', 12300),
+(205, 4, 'Weekend plans vs reality', 38700);
+
+WITH TopUsers AS (
+    SELECT 
+        'Top User' AS entity_type,
+        username AS title_or_name,
+        follower_count AS metric_value
+    FROM Users2
+    ORDER BY follower_count DESC
+    LIMIT 3
+),
+TopPosts AS (
+    SELECT 
+        'Top Post' AS entity_type,
+        caption AS title_or_name,
+        like_count AS metric_value
+    FROM Posts
+    ORDER BY like_count DESC
+    LIMIT 3
+)
+SELECT entity_type, title_or_name, metric_value FROM TopUsers
+UNION ALL
+SELECT entity_type, title_or_name, metric_value FROM TopPosts;
+
+
+WITH RECURSIVE BookingCalendar AS (
+    
+    SELECT 
+        CURRENT_DATE() AS booking_date,
+        1 AS day_number
+    
+    UNION ALL
+    
+    -- Recursive Step: Add 1 day until 7 days are generated
+    SELECT 
+        DATE_ADD(booking_date, INTERVAL 1 DAY),
+        day_number + 1
+    FROM BookingCalendar
+    WHERE day_number < 7
+)
+SELECT 
+    day_number,
+    booking_date,
+    DAYNAME(booking_date) AS day_name
+FROM BookingCalendar;
+
+
+SELECT u.user_id, u.username, u.follower_count
+FROM Users2 u
+WHERE u.user_id IN (
+    SELECT inner_u.user_id 
+    FROM (
+        SELECT user_id, follower_count 
+        FROM Users2 
+        WHERE follower_count IS NOT NULL
+    ) AS inner_u
+    WHERE inner_u.follower_count > 1000
+)
+AND u.user_id NOT IN (
+    SELECT user_id 
+    FROM Users2 
+    WHERE follower_count <= 1000 OR follower_count IS NULL
+);
+
+
+WITH InfluencerUsers AS (
+    SELECT 
+        user_id,
+        username,
+        follower_count
+    FROM Users2
+    WHERE follower_count > 1000
+)
+SELECT 
+    user_id,
+    username,
+    follower_count
+FROM InfluencerUsers
+ORDER BY follower_count DESC;

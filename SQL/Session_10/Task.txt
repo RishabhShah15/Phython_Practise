@@ -1,0 +1,120 @@
+
+
+CREATE TABLE Influencers (
+    id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Collaborations (
+    id INT PRIMARY KEY,
+    influencer1_id INT,
+    influencer2_id INT,
+    collab_date DATE,
+    FOREIGN KEY (influencer1_id) REFERENCES Influencers(id),
+    FOREIGN KEY (influencer2_id) REFERENCES Influencers(id)
+);
+
+
+SELECT 
+    i.id AS influencer_id,
+    i.name AS influencer_name,
+    p.name AS partner_name,
+    c.collab_date
+FROM Influencers i
+LEFT JOIN Collaborations c 
+    ON i.id = c.influencer1_id
+LEFT JOIN Influencers p 
+    ON c.influencer2_id = p.id
+
+UNION
+
+SELECT 
+    i.id AS influencer_id,
+    i.name AS influencer_name,
+    p.name AS partner_name,
+    c.collab_date
+FROM Influencers i
+LEFT JOIN Collaborations c 
+    ON i.id = c.influencer2_id
+LEFT JOIN Influencers p 
+    ON c.influencer1_id = p.id;
+
+
+
+
+SELECT 
+    p.playlist_name AS playlist_name,
+    parent.playlist_name AS parent_playlist_name
+FROM Playlists p
+LEFT JOIN Playlists parent 
+    ON p.parent_playlist_id = parent.id;
+
+
+
+
+SELECT 
+    u.username,
+    o.order_date,
+    p.amount AS payment_amount
+FROM Users u
+LEFT JOIN Orders o 
+    ON u.id = o.user_id
+LEFT JOIN Payments p 
+    ON o.id = p.order_id;
+
+
+SELECT DISTINCT 
+    r.id AS restaurant_id,
+    r.name AS restaurant_name,
+    r.city
+FROM Restaurants r
+INNER JOIN Reviews rev 
+    ON r.id = rev.restaurant_id;
+
+
+
+CREATE TABLE Categories (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    category_name VARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE tbl_Products (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    product_name VARCHAR(150) NOT NULL,
+    category_id INT,
+    category_name VARCHAR(100), 
+    price DECIMAL(10, 2),
+    FOREIGN KEY (category_id) REFERENCES Categories(id)
+);
+INSERT INTO Categories (id, category_name) VALUES
+(1, 'Electronics'),
+(2, 'Footwear'),
+(3, 'Apparel'),
+(4, 'Home & Kitchen');
+
+
+INSERT INTO tbl_Products (product_name, category_id, category_name, price) VALUES
+('Noise-Cancelling Headphones', 1, 'Electronics', 149.99),
+('Mechanical Keyboard',        1, 'electronics',   89.50),  
+('Running Shoes',              2, 'Footwear ',     75.00),
+('Cotton T-Shirt',             3, 'Apparel',       19.99),
+('Stainless Steel Kettle',     4, 'Home & Kitchen', 34.50);
+
+
+SELECT 
+    p.id AS product_id,
+    p.product_name,
+    c.category_name
+FROM tbl_Products p
+INNER JOIN Categories c 
+    ON p.category_id = c.id;
+
+
+SELECT 
+    p.id AS product_id,
+    p.product_name,
+    c.category_name
+FROM tbl_Products p
+INNER JOIN Categories c 
+    ON LOWER(TRIM(p.category_name)) = LOWER(TRIM(c.category_name));

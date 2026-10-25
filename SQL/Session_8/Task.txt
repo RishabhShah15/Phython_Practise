@@ -1,0 +1,50 @@
+CREATE TABLE tbl_Orders (
+    order_id INT PRIMARY KEY,
+    user_id INT,
+    payment_method VARCHAR(20),
+    amount DECIMAL(10,2)
+);
+
+INSERT INTO tbl_Orders (order_id, user_id, payment_method, amount)
+VALUES
+(1, 101, 'UPI', 250.00),
+(2, 102, 'Card', 500.00),
+(3, 101, 'Wallet', 150.00),
+(4, 103, 'UPI', 450.00),
+(5, 104, 'COD', 350.00),
+(6, 102, 'Card', 700.00),
+(7, 103, 'UPI', 200.00),
+(8, 101, 'Card', 600.00);
+
+SELECT * FROM Orders;
+
+SELECT
+    payment_method,
+    COUNT(*) AS order_count
+FROM tbl_Orders
+GROUP BY payment_method;
+
+
+SELECT
+    user_id,
+    SUM(amount) AS total_spend
+FROM tbl_Orders
+GROUP BY user_id;
+
+SELECT
+    payment_method,
+    AVG(amount) AS average_amount
+FROM tbl_Orders
+GROUP BY payment_method
+HAVING AVG(amount) > 300;
+
+SELECT *
+FROM tbl_Orders
+WHERE amount > 300;
+
+SELECT
+    payment_method,
+    AVG(amount) AS average_amount
+FROM tbl_Orders
+GROUP BY payment_method
+HAVING AVG(amount) > 300;

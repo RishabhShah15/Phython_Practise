@@ -1,0 +1,92 @@
+
+CREATE TABLE Restaurant4 (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(150) NOT NULL,
+    cuisine VARCHAR(100) NOT NULL,
+    location VARCHAR(150) NOT NULL,
+    average_rating DECIMAL(3, 2) NOT NULL CHECK (average_rating BETWEEN 0.00 AND 5.00)
+);
+
+
+INSERT INTO Restaurant4 (name, cuisine, location, average_rating) VALUES
+('Bukhara - ITC Maurya', 'North Indian', 'Chanakyapuri, New Delhi', 4.8),
+('Karim\'s', 'North Indian', 'Jama Masjid, Old Delhi', 4.4),
+('Peter Cat', 'Continental', 'Park Street, Kolkata', 4.6),
+('Glenary\'s Bakery & Cafe', 'Continental', 'Chauk Bazaar, Darjeeling', 4.5),
+('Vidyarthi Bhavan', 'South Indian', 'Gandhi Bazaar, Bengaluru', 4.6),
+('Mavalli Tiffin Room (MTR)', 'South Indian', 'Lalbagh, Bengaluru', 4.5);
+SELECT 
+    cuisine,
+    COUNT(id) AS restaurant_count
+FROM Restaurant4
+GROUP BY cuisine
+ORDER BY restaurant_count DESC, cuisine ASC;
+
+
+CREATE TABLE Review2 (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    restaurant_id INT NOT NULL,
+    user_name VARCHAR(100) NOT NULL,
+    rating DECIMAL(2, 1) NOT NULL CHECK (rating BETWEEN 1.0 AND 5.0),
+    review_date DATE NOT NULL,
+    FOREIGN KEY (restaurant_id) REFERENCES Restaurant4(id) ON DELETE CASCADE
+);
+
+
+INSERT INTO Review2 (restaurant_id, user_name, rating, review_date) VALUES
+(1, 'Rohan Verma', 5.0, '2026-09-10'),
+(1, 'Priya Shah', 4.8, '2026-09-15'),
+(2, 'Amitabh Roy', 4.2, '2026-09-18'),
+(2, 'Neha Gupta', 4.5, '2026-09-22'),
+(3, 'Debanjan Mitra', 4.7, '2026-09-25'),
+(3, 'Siddharth Sen', 4.4, '2026-09-28'),
+(4, 'Tenzing Norbu', 4.6, '2026-10-02'),
+(4, 'Ananya Kashyap', 4.3, '2026-10-05'),
+(5, 'Karthik Rao', 4.8, '2026-10-10'),
+(5, 'Divya Nair', 4.5, '2026-10-14'),
+(6, 'Venkatesh Iyer', 4.6, '2026-10-18'),
+(6, 'Sunil Gowda', 4.4, '2026-10-22');
+
+
+SELECT 
+    r.name AS restaurant_name,
+    r.cuisine,
+    ROUND(AVG(rev.rating), 2) AS calculated_avg_rating
+FROM Restaurant4 r
+JOIN Review2 rev 
+    ON r.id = rev.restaurant_id
+GROUP BY 
+    r.id, 
+    r.name, 
+    r.cuisine
+ORDER BY 
+    calculated_avg_rating DESC,
+    r.name ASC;
+    
+    
+    WITH RestaurantAggregatedRatings AS (
+    SELECT 
+        r.id,
+        r.name AS restaurant_name,
+        r.cuisine,
+        ROUND(AVG(rev.rating), 2) AS avg_rating
+    FROM Restaurant4 r
+    JOIN Review2 rev 
+        ON r.id = rev.restaurant_id
+    GROUP BY 
+        r.id, 
+        r.name, 
+        r.cuisine
+)
+SELECT 
+    restaurant_name,
+    cuisine,
+    avg_rating,
+    DENSE_RANK() OVER (
+        PARTITION BY cuisine 
+        ORDER BY avg_rating DESC
+    ) AS cuisine_rank
+FROM RestaurantAggregatedRatings
+ORDER BY 
+    cuisine ASC, 
+    cuisine_rank ASC;

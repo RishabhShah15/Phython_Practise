@@ -1,0 +1,158 @@
+CREATE TABLE Restaurants1 (
+    restaurant_id INT PRIMARY KEY,
+    restaurant_name VARCHAR(100),
+    city VARCHAR(50),
+    rating DECIMAL(2, 1)
+);
+
+INSERT INTO Restaurants1 (restaurant_id, restaurant_name, city, rating) VALUES
+(1, 'Spice Symphony', 'Mumbai', 4.6),
+(2, 'Coastal Bites', 'Mumbai', 3.8),
+(3, 'Dosa Corner', 'Mumbai', 4.1),
+(4, 'Urban Dhaba', 'Delhi', 4.5),
+(5, 'Curry Leaf', 'Delhi', 3.5);
+
+SELECT 
+    restaurant_id,
+    restaurant_name,
+    city,
+    rating
+FROM Restaurants1 r
+WHERE rating > (
+    SELECT AVG(rating)
+    FROM Restaurants1
+    WHERE city = r.city
+);
+
+CREATE TABLE Users1 (
+    user_id INT PRIMARY KEY,
+    user_name VARCHAR(100)
+);
+
+CREATE TABLE Orders1 (
+    order_id INT PRIMARY KEY,
+    user_id INT,
+    order_amount DECIMAL(8, 2),
+    FOREIGN KEY (user_id) REFERENCES Users1(user_id)
+);
+
+INSERT INTO Users1 (user_id, user_name) VALUES
+(101, 'Aarav Sharma'),
+(102, 'Priya Patel'),
+(103, 'Rohan Verma');
+
+INSERT INTO Orders1 (order_id, user_id, order_amount) VALUES
+(1, 101, 450.00),
+(2, 101, 890.00),
+(3, 102, 320.00);
+
+SELECT 
+    u.user_id,
+    u.user_name,
+    (
+        SELECT COUNT(*)
+        FROM Orders1 o
+        WHERE o.user_id = u.user_id
+    ) AS total_orders
+FROM Users1 u;
+
+
+CREATE TABLE Movies1 (
+    movie_id INT PRIMARY KEY,
+    title VARCHAR(100),
+    language VARCHAR(50)
+);
+
+CREATE TABLE Reviews (
+    review_id INT PRIMARY KEY,
+    movie_id INT,
+    rating_stars INT,
+    FOREIGN KEY (movie_id) REFERENCES Movies1(movie_id)
+);
+
+INSERT INTO Movies1 (movie_id, title, language) VALUES
+(1, 'Kantara', 'Kannada'),
+(2, 'RRR', 'Telugu'),
+(3, 'Dangal', 'Hindi'),
+(4, 'Liger', 'Hindi');
+
+INSERT INTO Reviews (review_id, movie_id, rating_stars) VALUES
+(101, 1, 5),
+(102, 1, 4),
+(103, 2, 5),
+(104, 3, 4),
+(105, 4, 2);
+
+SELECT 
+    movie_id,
+    title,
+    language
+FROM Movies1
+WHERE movie_id IN (
+    SELECT DISTINCT movie_id
+    FROM Reviews
+    WHERE rating_stars = 5
+);
+
+
+CREATE TABLE Categories1 (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(50)
+);
+
+CREATE TABLE Sellers1 (
+    seller_id INT PRIMARY KEY,
+    seller_name VARCHAR(100)
+);
+
+CREATE TABLE Products1 (
+    product_id INT PRIMARY KEY,
+    seller_id INT,
+    category_id INT,
+    product_name VARCHAR(100),
+    FOREIGN KEY (seller_id) REFERENCES Sellers1(seller_id),
+    FOREIGN KEY (category_id) REFERENCES Categories1(category_id)
+);
+
+INSERT INTO Categories1 (category_id, category_name) VALUES
+(1, 'Electronics'),
+(2, 'Fashion'),
+(3, 'Home & Kitchen');
+
+INSERT INTO Sellers1 (seller_id, seller_name) VALUES
+(201, 'OmniRetail India'),
+(202, 'TechTrendz'),
+(203, 'StyleHub');
+
+
+INSERT INTO Products1 (product_id, seller_id, category_id, product_name) VALUES
+(501, 201, 1, 'Noise Wireless Earbuds'),
+(502, 201, 2, 'Cotton Linen Shirt'),
+(503, 201, 3, 'Air Fryer'),
+(504, 202, 1, 'Mechanical Keyboard'),
+(505, 203, 2, 'Running Shoes'),
+(506, 203, 3, 'Ceramic Dinner Set');
+
+SELECT s.seller_id, s.seller_name
+FROM Sellers1 s
+WHERE NOT EXISTS (
+    SELECT c.category_id
+    FROM Categories1 c
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM Products1 p
+        WHERE p.seller_id = s.seller_id
+          AND p.category_id = c.category_id
+    )
+);
+
+SELECT s.seller_id, s.seller_name
+FROM Sellers1 s
+WHERE (
+    SELECT COUNT(DISTINCT p.category_id)
+    FROM Products1 p
+    WHERE p.seller_id = s.seller_id
+) = (
+    SELECT COUNT(*) 
+    FROM Categories1
+);

@@ -1,0 +1,62 @@
+CREATE TABLE Playlists3 (
+    id INT PRIMARY KEY,
+    user_id INT,
+    playlist_name VARCHAR(100),
+    total_likes INT
+);
+
+INSERT INTO Playlists3 (id, user_id, playlist_name, total_likes) VALUES
+(1, 101, 'Late Night Lofi', 450),
+(2, 101, 'Workout Phonk', 720),
+(3, 101, 'Chill Acoustic', 450),
+(4, 102, 'Synthwave Drive', 890),
+(5, 102, 'Deep House Party', 890),
+(6, 102, 'Ambient Study', 310),
+(7, 103, 'Indie Coffee Shop', 610),
+(8, 103, 'Rock Classics 90s', 950),
+(9, 103, 'Road Trip Hits', 610);
+
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY total_likes DESC) AS row_num,
+    id,
+    playlist_name,
+    user_id,
+    total_likes
+FROM Playlists3;
+
+SELECT 
+    playlist_name,
+    user_id,
+    total_likes,
+    RANK() OVER (ORDER BY total_likes DESC) AS global_rank
+FROM Playlists3;
+
+SELECT 
+    playlist_name,
+    user_id,
+    total_likes,
+    DENSE_RANK() OVER (
+        PARTITION BY user_id 
+        ORDER BY total_likes DESC
+    ) AS user_dense_rank
+FROM Playlists3;
+
+WITH RankedUserPlaylists AS (
+    SELECT 
+        user_id,
+        playlist_name,
+        total_likes,
+        ROW_NUMBER() OVER (
+            PARTITION BY user_id 
+            ORDER BY total_likes DESC, id ASC
+        ) AS playlist_rank
+    FROM Playlists3
+)
+SELECT 
+    user_id,
+    playlist_name,
+    total_likes,
+    playlist_rank
+FROM RankedUserPlaylists
+WHERE playlist_rank <= 2
+ORDER BY user_id ASC, playlist_rank ASC;

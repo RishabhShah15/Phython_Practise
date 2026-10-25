@@ -1,0 +1,38 @@
+CREATE TABLE Restaurants (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    cuisine VARCHAR(50),
+    rating DECIMAL(2,1),
+    city VARCHAR(50)
+);
+
+INSERT INTO Restaurants
+(id, name, cuisine, rating, city)
+VALUES
+(1, 'Swagat', 'Gujarati', 4.5, 'Ahmedabad'),
+(2, 'Swadisht', 'South Indian', 4.2, 'Surat'),
+(3, 'Pizza Palace', 'Italian', 3.8, 'Ahmedabad'),
+(4, 'Dragon House', 'Chinese', 4.7, 'Surat'),
+(5, 'Spice Garden', 'Punjabi', 3.4, 'Vadodara'),
+(6, 'Swaad Kitchen', 'Chinese', 4.0, 'Ahmedabad');
+
+SELECT * FROM Restaurants;
+
+
+SELECT *
+FROM Restaurants
+WHERE rating > 4.0
+AND city IN ('Ahmedabad', 'Surat');
+
+SELECT *
+FROM Restaurants
+WHERE name LIKE 'Swa%';
+
+SELECT *
+FROM Restaurants
+WHERE rating BETWEEN 3.5 AND 4.5;
+
+
+SELECT *
+FROM Restaurants
+WHERE cuisine IN ('Chinese', 'Italian', 'South Indian');

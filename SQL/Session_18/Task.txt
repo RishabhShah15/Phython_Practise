@@ -1,0 +1,116 @@
+CREATE TABLE songs2 (
+    song_id INT PRIMARY KEY,
+    artist_name VARCHAR(100),
+    title VARCHAR(150)
+);
+
+INSERT INTO songs2 (song_id, artist_name, title) VALUES
+(1, 'Taylor Swift', 'Blank Space'),
+(2, 'Taylor Swift', 'Style'),
+(3, 'Taylor Swift', 'Shake It Off'),
+(4, 'Taylor Swift', 'Cardigan'),
+(5, 'Ed Sheeran', 'Shape of You'),
+(6, 'Ed Sheeran', 'Perfect'),
+(7, 'The Weeknd', 'Blinding Lights');
+
+SELECT 
+    artist_name, 
+    COUNT(song_id) AS total_songs
+FROM 
+    songs2
+GROUP BY 
+    artist_name
+HAVING 
+    COUNT(song_id) > 3;
+    
+    
+    CREATE TABLE users6 (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(50)
+);
+
+CREATE TABLE orders6 (
+    order_id INT PRIMARY KEY,
+    user_id INT,
+    amount DECIMAL(10, 2),
+    FOREIGN KEY (user_id) REFERENCES users6(user_id)
+);
+
+INSERT INTO users6 (user_id, username) VALUES
+(1, 'alice'),
+(2, 'bob'),
+(3, 'charlie');
+
+INSERT INTO orders6 (order_id, user_id, amount) VALUES
+(101, 1, 150.00),
+(102, 1, 200.50),
+(103, 2, 75.00);
+    
+    
+    SELECT 
+    u.username,
+    COALESCE(SUM(o.amount), 0.00) AS total_order_amount
+FROM 
+    users6 u
+LEFT JOIN 
+    orders o ON u.user_id = o.user_id
+GROUP BY 
+    u.user_id, 
+    u.username;
+    
+    CREATE TABLE restaurants6 (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    rating DECIMAL(2, 1)
+);
+
+INSERT INTO restaurants6 (id, name, rating) VALUES
+(1, 'Spice Villa', 4.5),
+(2, 'Daily Bites', 3.2),
+(3, 'Urban Grill', 4.8),
+(4, 'Quick Meal', 3.0),
+(5, 'Sunset Bistro', 4.0);
+
+SELECT 
+    name
+FROM 
+    restaurants6
+WHERE 
+    rating > (SELECT AVG(rating) FROM restaurants);
+    
+    
+    CREATE TABLE transactions (
+    id INT PRIMARY KEY,
+    user_id INT,
+    amount DECIMAL(10, 2),
+    transaction_date DATE
+);
+
+INSERT INTO transactions (id, user_id, amount, transaction_date) VALUES
+(1, 101, 500.00, '2026-03-01'),
+(2, 101, 250.00, '2026-03-03'),
+(3, 101, 100.00, '2026-03-05'),
+(4, 102, 1200.00, '2026-03-02'),
+(5, 102, 300.00, '2026-03-04');
+
+SELECT 
+    id,
+    user_id,
+    transaction_date,
+    amount,
+    SUM(amount) OVER (
+        PARTITION BY user_id 
+        ORDER BY transaction_date 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS running_total
+FROM 
+    transactions;
+    
+    SELECT product_id, title, price 
+FROM products 
+WHERE category_id = 42 AND price BETWEEN 500 AND 2000;
+
+
+SELECT product_id, title, price 
+FROM products 
+WHERE category_id = 42 AND price BETWEEN 500 AND 2000;

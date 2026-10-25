@@ -1,0 +1,19 @@
+Session_1
+
+CREATE DATABASE music_streaming_app;
+USE music_streaming_app;
+
+CREATE TABLE playlists (
+    playlist_id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    created_by VARCHAR(50) NOT NULL
+);
+
+INSERT INTO playlists (playlist_id, name, created_by) VALUES
+(1, 'Bollywood Hits', 'Amit'),
+(2, 'Chill Vibes', 'Pooja'),
+(3, 'Workout Mix', 'Rohan');
+
+SELECT * 
+FROM playlists 
+WHERE created_by = 'Amit';

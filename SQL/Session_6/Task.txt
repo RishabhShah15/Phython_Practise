@@ -1,0 +1,68 @@
+CREATE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100),
+    price DECIMAL(10,2)
+);
+
+INSERT INTO products (product_id, product_name, price)
+VALUES
+(1, 'Laptop', 65000.00),
+(2, 'Mouse', 999.00),
+(3, 'Keyboard', 799.00),
+(4, 'Smartphone', 40000.00),
+(5, 'Headphones', 1999.00),
+(6, 'Smartwatch', 2999.00),
+(7, 'Earphones', 499.00);
+
+SELECT *
+FROM products
+ORDER BY price ASC;
+
+SELECT *
+FROM products
+ORDER BY price DESC
+LIMIT 5;
+
+CREATE TABLE movies (
+    title VARCHAR(100),
+    release_year INT,
+    rating DECIMAL(3,1)
+);
+INSERT INTO movies (title, release_year, rating)
+VALUES
+('Sky Warriors', 2026, 8.5),
+('Final Mission', 2025, 9.1),
+('Future World', 2026, 9.2),
+('The Last Hero', 2024, 8.7),
+('Dark Planet', 2025, 7.8),
+('Ocean Mystery', 2026, 7.9),
+('Silent Storm', 2024, 9.0);
+SELECT title, release_year, rating
+FROM movies
+ORDER BY release_year DESC, rating DESC;
+
+SELECT *
+FROM restaurants
+ORDER BY name ASC
+LIMIT 10;
+
+CREATE TABLE songs (
+    song_id INT PRIMARY KEY,
+    song_name VARCHAR(100),
+    artist VARCHAR(100),
+    play_count BIGINT,
+    added_date DATE
+);
+
+INSERT INTO songs (song_id, song_name, artist, play_count, added_date)
+VALUES
+(1, 'Shape of You', 'Ed Sheeran', 1000000, '2026-10-15'),
+(2, 'Blinding Lights', 'The Weeknd', 950000, '2026-10-22'),
+(3, 'Levitating', 'Dua Lipa', 950000, '2026-10-19'),
+(4, 'Perfect', 'Ed Sheeran', 800000, '2026-10-20'),
+(5, 'Believer', 'Imagine Dragons', 750000, '2026-10-18');
+
+SELECT *
+FROM songs
+ORDER BY play_count DESC, added_date DESC
+LIMIT 3;

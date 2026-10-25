@@ -1,0 +1,100 @@
+
+CREATE TABLE tbl_restaurants (
+    res_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    city VARCHAR(100)
+);
+
+CREATE TABLE dishes (
+    id INT PRIMARY KEY,
+    restaurant_id INT,
+    dish_name VARCHAR(100),
+    price DECIMAL(10, 2),
+    FOREIGN KEY (restaurant_id) REFERENCES tbl_restaurants(res_id)
+);
+
+INSERT INTO tbl_restaurants (res_id, name, city)
+VALUES
+(1, 'Pizza Palace', 'Ahmedabad'),
+(2, 'Spice Garden', 'Mumbai'),
+(3, 'Burger Hub', 'Pune'),
+(4, 'Sweet Treats', 'Surat');
+
+
+INSERT INTO dishes (id, restaurant_id, dish_name, price)
+VALUES
+(101, 1, 'Margherita Pizza', 250.00),
+(102, 1, 'Farmhouse Pizza', 350.00),
+(103, 1, 'Garlic Bread', 120.00),
+
+(104, 2, 'Paneer Tikka', 220.00),
+(105, 2, 'Veg Biryani', 180.00),
+(106, 2, 'Butter Naan', 40.00),
+
+(107, 3, 'Classic Burger', 150.00),
+(108, 3, 'Cheese Burger', 200.00),
+(109, 3, 'French Fries', 100.00);
+
+
+
+SELECT
+    d.dish_name,
+    d.price,
+    r.name AS restaurant_name,
+    r.city
+FROM dishes d
+INNER JOIN tbl_restaurants r
+    ON d.restaurant_id = r.res_id;
+    
+    SELECT
+    r.res_id AS restaurant_id,
+    r.name AS restaurant_name,
+    r.city,
+    d.dish_name,
+    d.price
+FROM tbl_restaurants r
+LEFT JOIN dishes d
+    ON r.res_id = d.restaurant_id;
+    
+    
+    SELECT
+    d.dish_name,
+    d.price,
+    d.restaurant_id,
+    r.name AS restaurant_name,
+    r.city
+FROM tbl_restaurants r
+RIGHT JOIN dishes d
+    ON r.res_id = d.restaurant_id;
+    
+    
+    CREATE TABLE tbl_playlists (
+    id INT PRIMARY KEY,
+    playlist_name VARCHAR(100)
+);
+
+CREATE TABLE playlist_songs (
+    id INT PRIMARY KEY,
+    playlist_id INT,
+    song_name VARCHAR(100)
+);
+INSERT INTO tbl_playlists (id, playlist_name)
+VALUES
+(1, 'Workout Mix'),
+(2, 'Chill Vibes'),
+(3, 'Road Trip');
+
+INSERT INTO playlist_songs (id, playlist_id, song_name)
+VALUES
+(101, 1, 'Eye of the Tiger'),
+(102, 1, 'Stronger'),
+(103, 1, 'Believer'),
+(104, 2, 'Perfect'),
+(105, 2, 'Photograph');
+SELECT
+    p.id AS playlist_id,
+    p.playlist_name,
+    ps.song_name
+FROM tbl_playlists p
+LEFT JOIN playlist_songs ps
+    ON p.id = ps.playlist_id;

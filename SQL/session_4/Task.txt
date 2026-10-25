@@ -1,0 +1,37 @@
+CREATE TABLE MusicPlaylist (
+    id INT PRIMARY KEY,
+    song_name VARCHAR(100),
+    artist VARCHAR(100),
+    genre VARCHAR(50),
+    duration DECIMAL(5,2)
+);
+
+INSERT INTO MusicPlaylist
+(id, song_name, artist, genre, duration)
+VALUES
+(1, 'Shape of You', 'Ed Sheeran', 'Pop', 3.53),
+(2, 'Blinding Lights', 'The Weeknd', 'Synth-pop', 3.20),
+(3, 'Perfect', 'Ed Sheeran', 'Pop', 4.23),
+(4, 'Believer', 'Imagine Dragons', 'Rock', 3.24),
+(5, 'Levitating', 'Dua Lipa', 'Pop', 3.23);
+
+
+SELECT * FROM MusicPlaylist;
+
+SELECT song_name, artist
+FROM MusicPlaylist
+ORDER BY id
+LIMIT 3;
+
+
+SELECT DISTINCT restaurant
+FROM FoodOrders;
+
+SELECT
+    food_item AS 'Dish',
+    order_date AS 'Date Ordered'
+FROM FoodOrders;
+
+SELECT DISTINCT food_item, restaurant
+FROM FoodOrders
+LIMIT 2;

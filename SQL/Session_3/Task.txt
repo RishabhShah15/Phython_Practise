@@ -1,0 +1,31 @@
+CREATE TABLE Playlist (
+    id INT PRIMARY KEY,
+    song_name VARCHAR(150) NOT NULL,
+    artist VARCHAR(100) NOT NULL,
+    duration INT NOT NULL
+);
+
+
+INSERT INTO Playlist (id, song_name, artist, duration) 
+VALUES (1, 'Starboy', 'The Weeknd', 230);
+
+INSERT INTO Playlist (id, song_name, artist, duration) VALUES
+(2, 'Tum Hi Ho', 'Arjit Singh', 262),        
+(3, 'Brown Munde', 'AP Dhillon', 266),      
+(4, 'Intro Beat', 'Unknown Producer', 95);  
+
+UPDATE Playlist
+SET artist = 'Arijit Singh'
+WHERE id = 2;
+
+DELETE FROM Playlist
+WHERE duration < 120;
+
+
+UPDATE Playlist
+SET song_name = CONCAT(song_name, ' (Remix)')
+WHERE artist = 'AP Dhillon' 
+  AND duration > 180;
+
+
+
